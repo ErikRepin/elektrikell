@@ -7,7 +7,7 @@ import Countdown from 'react-countdown';
 
 function Low({ hourValue, setHourValue }) {
 
-   const endOfDay = new Date().setHours(23,59,59,999);
+   const endOfDay = new Date().setHours(23, 59 ,59 ,999);
    const [showElement, setShowElement] = useState('countdown');
    const [time, setTime] = useState(endOfDay);
 
@@ -19,10 +19,11 @@ function Low({ hourValue, setHourValue }) {
       {label: '6h', value: '6'},
       {label: '8h', value: '8'},
    ];
-
+   
+   // object sobitija (event) derzit v sebe informaciju o elemente nad kotorqi balo soversheno deistvie
    function handleOnChange(event) {
       const hour = event.currentTarget.value; 
-      const newDate = new Date().setHours(23 - hour,59,59,999);
+      const newDate = new Date().setHours(23 - hour, 59, 59, 999);
       if(newDate - Date.now() <= 0) {
          setShowElement('right');
       } else {
@@ -33,6 +34,11 @@ function Low({ hourValue, setHourValue }) {
       setHourValue(event.currentTarget.value);
    }
 
+   // onChange eto triger sobqtija 
+   // Sobqtija k nam prihodjat ot brauzera a k brauzeru prihodit ot pol'zovatelja 
+   // OnChange zapuskaetsja kogda pol'zovatel' sdelal izmenenija v input elementah(radio button)
+   // OnChange zapuskaet funkcii kotorqh ma nazqvaem obrabotchikami. V obrabotchik trigger sobitija otpavljaet object sobqtija (event)
+   // triggerq sobqtij vsegda nachinajutsja s 'on'
    return (
       <>
           <Row>
