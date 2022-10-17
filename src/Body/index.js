@@ -1,6 +1,10 @@
+import { useEffect, useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { getPriceData } from '../services/apiService';
+import ErrorModal from '../ErrorModal';
+
 
 const data = [
    {
@@ -48,6 +52,20 @@ const data = [
  ];
 
 function Body() {
+
+    
+    useEffect(() => {
+        (async function () {
+         try{
+          const response = await getPriceData();
+          console.log(response);
+        } catch (error) {
+         alert(error);
+        }
+      }) ();
+
+    }, []);
+
    return (
     <Row>
        <Col>
@@ -74,7 +92,9 @@ function Body() {
          </ResponsiveContainer>
 
       </Col>
-   </Row>);
+   </Row>
+   <ErrorModal errorMessage={errorMessage} show={showError} showError={setShowError} />
+   </>
 }
 
 export default Body;
