@@ -12,25 +12,24 @@ function Low({ hourValue, setHourValue }) {
    const [time, setTime] = useState(endOfDay);
 
    const cheapHours = [
-      {label: '1h', value: '1'},
-      {label: '2h', value: '2'},
-      {label: '3h', value: '3'},
-      {label: '4h', value: '4'},
-      {label: '6h', value: '6'},
-      {label: '8h', value: '8'},
+      {label: '1h', value: 1},
+      {label: '2h', value: 2},
+      {label: '3h', value: 3},
+      {label: '4h', value: 4},
+      {label: '6h', value: 6},
+      {label: '8h', value: 8},
    ];
 
    function handleOnChange(event) {
       const hour = event.currentTarget.value; 
-      const newDate = new Date().setHours(23 - hour,59,59,999);
+      const newDate = new Date().setHours(23 - hour, 59, 59, 999);
       if(newDate - Date.now() <= 0) {
-         setShowElement('right');
+         setShowElement('right now');
       } else {
           setShowElement('conutdown');
       }
-      //setShowElement('right now');
       setTime(newDate);
-      setHourValue(event.currentTarget.value);
+      setHourValue(+hour);
    }
 
    return (
