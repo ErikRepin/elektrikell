@@ -1,14 +1,14 @@
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-function High() {
+function High({currentPrice, worstTimeRange}) {
    return (
       <>
           <Row>
               <Col>Järgmine tiputund on</Col>
           </Row>
           <Row>
-              <Col>21:00st 22:00ni</Col>
+              <Col>{`${worstTimeRange.from}:00st ${worstTimeRange.until}:00no`}</Col>
           </Row>
           <Row>
               <Col>Siis on kilovatt-tunni hind 30.00 senti, mis on 12% kallim kui praegu</Col>
