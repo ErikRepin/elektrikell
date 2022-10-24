@@ -8,10 +8,8 @@ import moment from 'moment';
 
 function Low({ hourValue, setHourValue, bestTimeRange, currentPrice }) {
 
-   const endOfDay = new Date().setHours(23,59,59,999);
-
    const [showElement, setShowElement] = useState('countdown');
-   const [time, setTime] = useState(newDate());
+   const [time, setTime] = useState(null);
 
    const cheapHours = [
       {label: '1h', value: 1},
@@ -59,11 +57,11 @@ function Low({ hourValue, setHourValue, bestTimeRange, currentPrice }) {
                   </ButtonGroup>
              </Col>
           </Row>
-          <Col>Parim aeg selleks on {showElement === `${bestTimeRange.from}:00st` ? <Countdown date={time} /> : <h3>Right Now!</h3>} 
+          <Col>Parim aeg selleks on {`${bestTimeRange.from}:00st` `${bestTimeRange.from}:00ni` ,millini on jaanud? <Countdown date={time} /> : <h3>Right Now!</h3>} 
           </Row>
           <Row>
               <Col>
-                 {showElement === `countdown` ?  <Countdown date {time} /> : <h3> Right now!</h3>
+                 {showElement === `countdown` && time?  <Countdown date {time} /> : <h3> Right now!</h3>
               </Col>
           </Row>
           <Row>

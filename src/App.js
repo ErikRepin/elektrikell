@@ -1,5 +1,4 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+import './App.scss';
 import { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Header from './Header';
@@ -21,14 +20,18 @@ function App() {
     until: 0,
     worstprice: 0,
   });
+  const [selectedCountry, setSelectedCountry] = useState({key: `ee`, title: `Eesti`});
 
   return (
     <Container>
       <Header 
-      setRadioValue={setRadioValue} 
-      radioValue={radioValue} 
-      currentPrice={currentPrice}
-      setCurrentPrice={setcurrentPrice}/>
+        setRadioValue={setRadioValue} 
+        radioValue={radioValue} 
+        currentPrice={currentPrice}
+        setCurrentPrice={setCurrentPrice}/>
+        setSelectedCountry={setSelectedCountry}
+        selectedCountry={selectedCountry}
+        />
       <Body radioValue={radioValue} 
       hourValue={hourValue} 
       setBestTimeRange={setWorstTimeRange}/>
