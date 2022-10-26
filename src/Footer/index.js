@@ -1,11 +1,17 @@
 import High from './high';
 import Low from './low';
+import {}
 
-function Footer({ radioValue, hourValue, setHourValue }) {
-   
+function Footer(props) {
+  const radioValue = useSelector((state) => state.radioValue);
+
     return (
-      <>
-        {radioValue === 'low' ? (<Low {...{hourValue, setHourValue}} />) : (<High />)}
+    
+      <div id="footer">
+        {props.radioValue === 'low' ? (<Low {...props} />) : 
+        (<High />)}
+        (<High 
+        </div>
       </>
     );  
 }

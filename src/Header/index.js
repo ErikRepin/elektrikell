@@ -7,23 +7,24 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import { getCurrentPrice } from '../services/apiService';
 import ErrorModal from '../ErrorModal';
+import { useSelector, useDispatch } from `react-redux`;
+import {setCurrentPrice, setRadioValue, setSelectedCountry } from `../services/stateService`;
+
 
 function Header({ 
-        currentPrice,
-        setCurrentPrice,
-        radioValue,
-        setRadioValue,
-        selecteCountry,
-        setSelectedCountry,
-    }) {
-
-
-    const [price, setPrice] = useState(0);
+        
+   
     const [showError, setShowError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+    const [errorMassage, seterrorMassage] = useState(false);
+    const [price, setPrice] = useState(0);
+    
+    const currentPrice = useSelector((state) => state.currentPrice);
+    const radioValue = useSelector((state) => state.radioValue);
+    const dispatch = useDispatch();
 
-    const countries [
-        { key: `ee`, title: `Eesti`
+
+    const countryes [
+ { key: `ee`, title: `Eesti`
 },
 { key: `fi`, title: `Soome` },
 { key: `lv`, title: `Läti` },
@@ -34,13 +35,13 @@ useEffect(() => {
     (async function () {
         try {
             const response = await getCurrentPrice();
-            setCurrentPrice(response.date[0].price);
+            dispatch(setCurrentPrice(response.data[0].price));
         } catch (error) {
             setShowError(true);
             setErrorMessage(error.message);
         }
     })();
-}, [setCurrentPrice]);
+}, [dispatch]);
 
 
 const radios = [
@@ -49,11 +50,11 @@ const radios = [
 ];
 function handleOnChange(event) {
     
-    setRadioValue(event.currentTarget.value);
+    dispatch(setRadioValue(event.currentTarget.value));
 }
 
 function handleOnSelectCountry(key, event) {
-    setSelectedCountry(countries.find(country => country.key === key));
+    dispatch(setSelectedCountry(countries.find(country => country.key === key)));
 }
 
 return (

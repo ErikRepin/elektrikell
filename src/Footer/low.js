@@ -5,21 +5,37 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import Countdown from 'react-countdown';
 import moment from 'moment';
+import { useSelector, useDispatch } from 'react-redux';
+import { setHourValue } from `../services/stateService`;
 
-function Low({ hourValue, setHourValue, bestTimeRange, currentPrice }) {
+
+function Low() {
 
    const [showElement, setShowElement] = useState('countdown');
    const [time, setTime] = useState(null);
-
+   const hourValue = useSelector((state) => state.hourValue);
+   const currentPrice = useSelector((state) => state.currentPrice);
+   const bestTimeRange = useSelector((state) => state.bestTimeRange);
+   
+   const dispatch = useDispatch();
+   
    const cheapHours = [
-      {label: '1h', value: 1},
-      {label: '2h', value: 2},
-      {label: '3h', value: 3},
-      {label: '4h', value: 4},
-      {label: '6h', value: 6},
-      {label: '8h', value: 8},
+      { label: '1h', value: 1 },
+      { label: '2h', value: 2 },
+      { label: '3h', value: 3 },
+      {label: '4h', value: 4 },
+      {label: '6h', value: 6 },
+      {label: '8h', value: 8} ,
    ];
 
+   // useEffect - react hook kotorqi zapuskaetsja posle togo kak ves' komponent vypolnel render
+   // useEffetc prininmaet 2 argumenta
+   // 1 argument eto callback funkcija kotoraja zapuskaetsja pri...
+   // 2 argument massiva iz zavisemostej.
+   // zavisemosti eto peremennqe kotorqe ispolzujustsja v callback funkcii
+   // zavisemosti pri izmenenii zapuskajut callback funkciju zanogo
+   // ostaviv pustoij massiv v zavisemostjah tq garatiruesh 4to callback funkcija zapustisja tol'ko 1 raz
+   // daze pri izmenenii state, pri uslovii 4to v cacllbackfunkcii tq state ne ispol'zuesh
    useEffect(() => {
       const countDownUntil = moment.unix(bestTimeRange.timestamp).toDate();
       setTime(countDownUntil);
@@ -29,15 +45,15 @@ function Low({ hourValue, setHourValue, bestTimeRange, currentPrice }) {
       const hour = event.currentTarget.value; 
 
       if(bestTimeRange.timestamp > moment().unix())  {
-         setShowElement('rconutdown');
+         setShowElement('countdown');
       } else {
           setShowElement('right now');
       }
-      setHourValue(+hour);
+      dispatch(setHourValue(+hour);
    }
 
    return (
-      <>
+      <div className='text-center'>
           <Row>
              <Col>
                   <ButtonGroup>
@@ -57,7 +73,7 @@ function Low({ hourValue, setHourValue, bestTimeRange, currentPrice }) {
                   </ButtonGroup>
              </Col>
           </Row>
-          <Col>Parim aeg selleks on {`${bestTimeRange.from}:00st` `${bestTimeRange.from}:00ni` ,millini on jaanud? <Countdown date={time} /> : <h3>Right Now!</h3>} 
+          <Col>Parim aeg selleks on {`${bestTimeRange.from}:00st` `${bestTimeRange.from}:00ni` ,millini on jaanud? <Countdown date={time} /> : <h3>Right Now!</h3>}
           </Row>
           <Row>
               <Col>
@@ -71,6 +87,6 @@ function Low({ hourValue, setHourValue, bestTimeRange, currentPrice }) {
           </Row>
       </>
   );
-}
+                           
 
 export default Low;
