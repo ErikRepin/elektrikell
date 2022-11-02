@@ -5,12 +5,13 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-import { getCurrentPrice } from '../services/apiService';
+import { getCurrentPrice, localUrl } from '../services/apiService';
 import ErrorModal from '../ErrorModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCurrentPrice, setSelectedCountry } from '../services/stateService';
 // import { Link } from 'react-router-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
+
 
 function Header() {
     const [showError, setShowError] = useState(false);
@@ -48,7 +49,7 @@ function Header() {
 
     function handleOnChangePrice(event) {
         // event.preventDefault();
-        navigate(event.currentTarget.value + `/${hourValue}`);
+        navigate(localUrl + event.currentTarget.value + `/${hourValue}`);
     }
 
     function handleOnSelectCountry(key, event) {
@@ -87,7 +88,7 @@ function Header() {
                                 variant={idx % 2 ? 'outline-danger' : 'outline-success'}
                                 name="radio"
                                 value={radio.value}
-                                checked={location.pathname.includes(radio.value) || (idx === 0 && location.pathname === '/')}
+                                checked={location.pathname.includes(radio.value) || (idx ===  0 && !location.pathname.includes('/low') && !location.pathname.includes(`/high`))}
                                 onChange={handleOnChangePrice}
                             >
                                 {radio.name}

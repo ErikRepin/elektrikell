@@ -73,7 +73,7 @@ function Body() {
                             <Line type="monotone" dataKey="price" stroke="#8884d8" />
                             <ReferenceLine x={data.priceData?.findIndex(d => d.now)} stroke="red" />
                             {
-                                location.pathname.includes('/low') || location.pathname === '/'
+                                location.pathname.includes('/low') || !location.pathname.includes(`/high`)
                                     ? <ReferenceArea x1={x.x1} x2={x.x2} stroke="green" fill="green" opacity={0.4} />
                                     : <ReferenceArea x1={x.x1} x2={x.x2} stroke="red" fill="red" opacity={0.4} />
                             }
