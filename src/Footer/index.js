@@ -1,19 +1,20 @@
 import High from './high';
 import Low from './low';
-import {}
+import './footer.scss';
+import { Route, Routes } from 'react-router-dom';
 
 function Footer(props) {
-  const radioValue = useSelector((state) => state.radioValue);
 
     return (
-    
-      <div id="footer">
-        {props.radioValue === 'low' ? (<Low {...props} />) : 
-        (<High />)}
-        (<High 
+        <div id="footer">
+            <Routes>
+                <Route path="/" element={<Low {...props} />} />
+                <Route path="/low" element={<Low {...props} />} />
+                <Route path="/low/:hours" element={<Low {...props} />} />
+                <Route path="/high" element={<High />} />
+            </Routes>
         </div>
-      </>
-    );  
+    );
 }
 
 export default Footer;

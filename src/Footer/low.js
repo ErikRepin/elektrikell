@@ -6,87 +6,83 @@ import ToggleButton from 'react-bootstrap/ToggleButton';
 import Countdown from 'react-countdown';
 import moment from 'moment';
 import { useSelector, useDispatch } from 'react-redux';
-import { setHourValue } from `../services/stateService`;
-
+import { setHourValue } from '../services/stateService';
+import { useParams, useNavigate } from 'react-router-dom';
 
 function Low() {
+    const [showElement, setShowElement] = useState('countdown');
+    const [time, setTime] = useState(null);
+    const hourValue = useSelector((state) => state.hourValue);
+    const currentPrice = useSelector((state) => state.currentPrice);
+    const bestTimeRange = useSelector((state) => state.bestTimeRange);
+    // useParams - dajot nam peredannqe parametrq 4erez url
+    const { hours } = useParams();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-   const [showElement, setShowElement] = useState('countdown');
-   const [time, setTime] = useState(null);
-   const hourValue = useSelector((state) => state.hourValue);
-   const currentPrice = useSelector((state) => state.currentPrice);
-   const bestTimeRange = useSelector((state) => state.bestTimeRange);
-   
-   const dispatch = useDispatch();
-   
-   const cheapHours = [
-      { label: '1h', value: 1 },
-      { label: '2h', value: 2 },
-      { label: '3h', value: 3 },
-      {label: '4h', value: 4 },
-      {label: '6h', value: 6 },
-      {label: '8h', value: 8} ,
-   ];
+    const cheapHours = [
+        { label: '1h', value: 1 },
+        { label: '2h', value: 2 },
+        { label: '3h', value: 3 },
+        { label: '4h', value: 4 },
+        { label: '6h', value: 6 },
+        { label: '8h', value: 8 },
+    ];
+    console.log(hours);
+    useEffect(() => {
+        const countDownUntil = moment.unix(bestTimeRange.timestamp).toDate();
+        setTime(countDownUntil);
+        dispatch(setHourValue(+hours || 1));
+    }, [bestTimeRange, hours, dispatch]);
 
-   // useEffect - react hook kotorqi zapuskaetsja posle togo kak ves' komponent vypolnel render
-   // useEffetc prininmaet 2 argumenta
-   // 1 argument eto callback funkcija kotoraja zapuskaetsja pri...
-   // 2 argument massiva iz zavisemostej.
-   // zavisemosti eto peremennqe kotorqe ispolzujustsja v callback funkcii
-   // zavisemosti pri izmenenii zapuskajut callback funkciju zanogo
-   // ostaviv pustoij massiv v zavisemostjah tq garatiruesh 4to callback funkcija zapustisja tol'ko 1 raz
-   // daze pri izmenenii state, pri uslovii 4to v cacllbackfunkcii tq state ne ispol'zuesh
-   useEffect(() => {
-      const countDownUntil = moment.unix(bestTimeRange.timestamp).toDate();
-      setTime(countDownUntil);
-   }, [bestTimeRange]);
+    function handleOnChange(event) {
+        const hour = event.currentTarget.value;
 
-   function handleOnChange(event) {
-      const hour = event.currentTarget.value; 
+        if(bestTimeRange.timestamp > moment().unix()) {
+            setShowElement('countdown');
+        } else {
+            setShowElement('right now');
+        }
+        navigate('/low/' + hour);
+        dispatch(setHourValue(+hour));
+    }
 
-      if(bestTimeRange.timestamp > moment().unix())  {
-         setShowElement('countdown');
-      } else {
-          setShowElement('right now');
-      }
-      dispatch(setHourValue(+hour);
-   }
-
-   return (
-      <div className='text-center'>
-          <Row>
-             <Col>
-                  <ButtonGroup>
-                           {cheapHours.map(hour => (
-                              <ToggleButton
-                                 key={hour.value}
-                                 id={`hour-${hour.value}`}
-                                 type="radio"
-                                 name="hour"
-                                 value={hour.value}
-                                 checked={hourValue === hour.value}
-                                 onChange={handleOnChange}
-                                 >
-                                     {hour.label}
-                                 </ToggleButton>
-                           ))}
-                  </ButtonGroup>
-             </Col>
-          </Row>
-          <Col>Parim aeg selleks on {`${bestTimeRange.from}:00st` `${bestTimeRange.from}:00ni` ,millini on jaanud? <Countdown date={time} /> : <h3>Right Now!</h3>}
-          </Row>
-          <Row>
-              <Col>
-                 {showElement === `countdown` && time?  <Countdown date {time} /> : <h3> Right now!</h3>
-              </Col>
-          </Row>
-          <Row>
-              <Col>Siis on kilovatt-tunni hind 
-              {bestTimeRange.bestPrice} eur,
-               mis on {Math.round(100 - bestTimeRange.best / currentPrice * 100)}% kallim kui praegu</Col>
-          </Row>
-      </>
-  );
-                           
+    return (
+        <div className="text-center">
+            <Row>
+                <Col>
+                    <ButtonGroup>
+                        {cheapHours.map(hour => (
+                            <ToggleButton
+                                key={hour.value}
+                                id={`hour-${hour.value}`}
+                                type="radio"
+                                name="hour"
+                                value={hour.value}
+                                checked={hourValue === hour.value}
+                                onChange={handleOnChange}
+                            >
+                                {hour.label}
+                            </ToggleButton>
+                        ))}
+                    </ButtonGroup>
+                </Col>
+            </Row>
+            <Row>
+                <Col>Parim aeg selleks on {`${bestTimeRange.from}:00st ${bestTimeRange.until}:00ni`}, milleni on jäänud</Col>
+            </Row>
+            <Row>
+                <Col>
+                    {showElement === 'countdown' && time ? <Countdown date={time} /> : <h3>Right Now!</h3>}
+                </Col>
+            </Row>
+            <Row>
+                <Col>Siis on kilovatt-tunni hind {bestTimeRange.bestPrice} eur, 
+                    mis on {Math.round(100 - bestTimeRange.bestPrice / currentPrice * 100)}% odavam kui praegu
+                </Col>
+            </Row>
+        </div>
+    );
+}
 
 export default Low;

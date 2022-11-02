@@ -7,102 +7,99 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import { getCurrentPrice } from '../services/apiService';
 import ErrorModal from '../ErrorModal';
-import { useSelector, useDispatch } from `react-redux`;
-import {setCurrentPrice, setRadioValue, setSelectedCountry } from `../services/stateService`;
+import { useSelector, useDispatch } from 'react-redux';
+import { setCurrentPrice, setSelectedCountry } from '../services/stateService';
+// import { Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-
-function Header({ 
-        
-   
+function Header() {
     const [showError, setShowError] = useState(false);
-    const [errorMassage, seterrorMassage] = useState(false);
-    const [price, setPrice] = useState(0);
-    
+    const [errorMessage, setErrorMessage] = useState('');
     const currentPrice = useSelector((state) => state.currentPrice);
-    const radioValue = useSelector((state) => state.radioValue);
+    const selectedCountry = useSelector((state) => state.selectedCountry);
+    const hourValue = useSelector((state) => state.hourValue);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const location = useLocation();
 
-
-    const countryes [
- { key: `ee`, title: `Eesti`
-},
-{ key: `fi`, title: `Soome` },
-{ key: `lv`, title: `Läti` },
-{ key: `lt`, title: `Leedu` },
+    const countries = [
+        { key: 'ee', title: 'Eesti' },
+        { key: 'fi', title: 'Soome' },
+        { key: 'lv', title: 'Läti' },
+        { key: 'lt', title: 'Leedu' },
     ];
 
-useEffect(() => {
-    (async function () {
-        try {
-            const response = await getCurrentPrice();
-            dispatch(setCurrentPrice(response.data[0].price));
-        } catch (error) {
-            setShowError(true);
-            setErrorMessage(error.message);
-        }
-    })();
-}, [dispatch]);
+    useEffect(() => {
+        (async function () {
+            try {
+                const response = await getCurrentPrice(selectedCountry);
+                dispatch(setCurrentPrice(response.data[0].price));
+            } catch (error) {
+                setShowError(true);
+                setErrorMessage(error.message);
+            }
+        })();
+    }, [dispatch, selectedCountry]);
 
+    const radios = [
+        { name: 'Low Price', value: '/low' },
+        { name: 'High price', value: '/high' },
+    ];
 
-const radios = [
-    { name: 'High price', value: 'low' },
-    { name: 'Low Price', value: 'high' },
-];
-function handleOnChange(event) {
-    
-    dispatch(setRadioValue(event.currentTarget.value));
-}
+    function handleOnChangePrice(event) {
+        // event.preventDefault();
+        navigate(event.currentTarget.value + `/${hourValue}`);
+    }
 
-function handleOnSelectCountry(key, event) {
-    dispatch(setSelectedCountry(countries.find(country => country.key === key)));
-}
+    function handleOnSelectCountry(key, event) {
+        dispatch(setSelectedCountry(countries.find(country => country.key === key)));
+    }
 
-return (
-    <>
-        <Row>
-            <Col><h3>Elektrikell</h3></Col>
-            <Col>
-                <DropdownButton
-                    key="Secondary"
-                    id={`dropdown-variants-secondary`}
-                    variant="Secondary"
-                    onSelect={handleOnSelectCountry}
-                    title={selectedCountry.title}
+    return (
+        <>
+            <Row className="mt-2">
+                <Col><h3>Elektrikell</h3></Col>
+                <Col>
+                    <DropdownButton
+                        key="Secondary"
+                        id={`dropdown-variants-secondary`}
+                        variant="secondary"
+                        onSelect={handleOnSelectCountry}
+                        title={selectedCountry.title}
+                        className="float-end"
+                    >
+                        {countries.map(country => <Dropdown.Item key={country.key} eventKey={country.key}>{country.title}</Dropdown.Item>)}
 
-                >
-                    {countries.map(country => <Dropdown.Item key={country.key}> eventKey={country.title}</Dropdown.Item>)}
-
-
-
-                </DropdownButton>
-            </Col>
-        </Row>
-
-        <Row>
-            <Col>Status</Col>
-            <Col>
-                <ButtonGroup>
-                    {radios.map((radio, idx) => (
-                        <ToggleButton
-                            key={idx}
-                            id={`radio-${idx}`}
-                            type="radio"
-                            variant={idx % 2 ? 'outline-danger' : 'outline-success'}
-                            name="radio"
-                            value={radio.value}
-                            checked={radioValue === radio.value}
-                            onChange={handleOnChange}
-                        >
-                            {radio.name}
-                        </ToggleButton>
-                    ))}
-                </ButtonGroup>
-            </Col>
-            <Col>HIND {currentPrice}eur /Mwh</Col>
-        </Row>
-        <ErrorModal errorMessage={errorMessage} show={showError} setshow={setShowError} />
-    </>
-);
+                    </DropdownButton>
+                </Col>
+            </Row>
+            <Row>
+                <Col>Status</Col>
+                <Col className="text-center">
+                    {/* <Link to="/high">Show high price</Link>
+                    <Link to="/low">Show low price</Link> */}
+                    <ButtonGroup>
+                        {radios.map((radio, idx) => (
+                            <ToggleButton
+                                key={idx}
+                                id={`radio-${idx}`}
+                                type="radio"
+                                variant={idx % 2 ? 'outline-danger' : 'outline-success'}
+                                name="radio"
+                                value={radio.value}
+                                checked={location.pathname.includes(radio.value) || (idx === 0 && location.pathname === '/')}
+                                onChange={handleOnChangePrice}
+                            >
+                                {radio.name}
+                            </ToggleButton>
+                        ))}
+                    </ButtonGroup>
+                </Col>
+                <Col className="text-end">HIND {currentPrice}eur /MWh</Col>
+            </Row>
+            <ErrorModal errorMessage={errorMessage} show={showError} setShow={setShowError} />
+        </>
+    );
 }
 
 export default Header;

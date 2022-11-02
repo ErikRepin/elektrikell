@@ -1,52 +1,46 @@
-import { configureStore, createAction, createReducer } from `@reduxjs/toolkit`;
-import { configure } from "@testing-library/react";
+import { configureStore, createAction, createReducer } from '@reduxjs/toolkit';
 
 const initialState = {
-   hourValue: 1,
-   currentPrice: 0,
-   radioValue: `low`,
-   selectedCountry: {
-      key `ee`, title: `Eesti`,
-   },
-   bestTimeRange: {
-      from: 0,
-    until: 0,
-    timeStamp: null,
-    bestprice: 0,
-   },
-};
-
-
-setWorstTimeRange : {
-   from: 0,
- until: 0,
- timeStamp: null,
- bestprice: 0,
-},
+    hourValue: 1,
+    currentPrice: 0,
+    selectedCountry: {
+        key: 'ee', title: 'Eesti',
+    },
+    bestTimeRange: {
+        from: 0,
+        until: 0,
+        timestamp: null,
+        bestPrice: 0,
+    },
+    worstTimeRange: {
+        from: 0,
+        until: 0,
+        worstPrice: 0,
+    }
 };
 
 export const setHourValue = createAction("setHourValue");
 export const setCurrentPrice = createAction("setCurrentPrice");
-export const setRadioValue = createAction("setRadioValue");
 export const setSelectedCountry = createAction("setSelectedCountry");
 export const setBestTimeRange = createAction("setBestTimeRange");
-
-
+export const setWorstTimeRange = createAction("setWorstTimeRange");
 
 const reducer = createReducer(initialState, {
-   [setHourValue]: (state, action) => {
-      state.hourValue = action.payload;
-   },
-   [setCurrentPrice]: (state, action) => {
-      state.currentPrice = action.payload;
-   },
-   [setRadioValue]: (state, action) => {
-      state.setRadioValue = action.payload;
-   },
-   [setSelectedCountry]: (state, action) => {
-      state.setSelectedCountry = action.payload;
-   },
+    [setHourValue]: (state, action) => {
+        state.hourValue = action.payload;
+    },
+    [setCurrentPrice]: (state, action) => {
+        state.currentPrice = action.payload;
+    },
+    [setSelectedCountry]: (state, action) => {
+        state.selectedCountry = action.payload;
+    },
+    [setBestTimeRange]: (state, action) => {
+        state.bestTimeRange = action.payload;
+    },
+    [setWorstTimeRange]: (state, action) => {
+        state.worstTimeRange = action.payload;
+    },
 });
 
-
-export const store = configureStore({reducer});
+export const store = configureStore({ reducer });
